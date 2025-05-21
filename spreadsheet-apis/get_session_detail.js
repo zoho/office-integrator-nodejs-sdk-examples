@@ -49,7 +49,7 @@ class GetSessionDetail {
     static async initializeSdk() {
 
         // Refer this help page for api end point domain details -  https://www.zoho.com/officeintegrator/api/v1/getting-started.html
-        let environment = await new SDK.ApiServer.Production("https://api.office-integrator.com");
+        let environment = await new SDK.DataCenter.Production("https://api.office-integrator.com");
 
         let auth = new SDK.AuthBuilder()
                         .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service

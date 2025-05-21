@@ -1,8 +1,8 @@
 import * as SDK from "@zoho-corp/office-integrator-sdk";
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 const __dirname = import.meta.dirname;
 
-class EditPresentation {
+class EditPDF {
 
     static async execute() {
         
@@ -12,45 +12,38 @@ class EditPresentation {
 
         try {
             var sdkOperations = new SDK.V1.V1Operations();
-            var createPresentationParameters = new SDK.V1.CreatePresentationParameters();
+            var editPdfParameters = new SDK.V1.EditPdfParameters();
 
-            createPresentationParameters.setUrl("https://demo.office-integrator.com/samples/show/Zoho_Show.pptx");
-            
-            // var fileName = "Zoho_Show.pptx";
-            // var filePath = __dirname + "/sample_documents/Zoho_Show.pptx";
-            // var fileStream = readFileSync(filePath);
-            // var streamWrapper = new SDK.StreamWrapper(fileName, fileStream, filePath);
-            
-            // createPresentationParameters.setDocument(streamWrapper);
+            editPdfParameters.setUrl("https://demo.office-integrator.com/zdocs/EventForm.pdf");
             
             var documentInfo = new SDK.V1.DocumentInfo();
 
             //Time value used to generate unique document everytime. You can replace based on your application.
             documentInfo.setDocumentId("" + new Date().getTime());
-            documentInfo.setDocumentName("Zoho_Show.pptx");
+            documentInfo.setDocumentName("EventForm.pdf");
 
-            createPresentationParameters.setDocumentInfo(documentInfo);
+            editPdfParameters.setDocumentInfo(documentInfo);
 
             var userInfo = new SDK.V1.UserInfo();
 
             userInfo.setUserId("1000");
             userInfo.setDisplayName("Prabakaran R");
 
-            createPresentationParameters.setUserInfo(userInfo);
+            editPdfParameters.setUserInfo(userInfo);
 
-            var editorSettings = new SDK.V1.ZohoShowEditorSettings();
+            var editorSettings = new SDK.V1.PdfEditorSettings();
 
+            editorSettings.setUnit("in");
             editorSettings.setLanguage("en");
 
-            createPresentationParameters.setEditorSettings(editorSettings);
+            editPdfParameters.setEditorSettings(editorSettings);
 
-            var permissions = new Map();
+            var editorUiOptions = new SDK.V1.PdfEditorUiOptions();
 
-            permissions.set("document.export", true);
-            permissions.set("document.print", false);
-            permissions.set("document.edit", true);
+            editorUiOptions.setFileMenu("show");
+            editorUiOptions.setSaveButton("show");
 
-            createPresentationParameters.setPermissions(permissions);
+            editPdfParameters.setUiOptions(editorUiOptions);
 
             var callbackSettings = new SDK.V1.CallbackSettings();
             var saveUrlParams = new Map();
@@ -58,37 +51,36 @@ class EditPresentation {
             saveUrlParams.set("auth_token", "1234");
             saveUrlParams.set("id", "123131");
 
-            /*var saveUrlHeaders = new Map();
+            var saveUrlHeaders = new Map();
 
             saveUrlHeaders.set("header1", "value1");
             saveUrlHeaders.set("header2", "value2");
 
-            callbackSettings.setSaveUrlHeaders(saveUrlHeaders);*/
-
+            callbackSettings.setSaveUrlHeaders(saveUrlHeaders);
             callbackSettings.setSaveUrlParams(saveUrlParams);
-            callbackSettings.setSaveFormat("pptx");
+            callbackSettings.setSaveFormat("pdf");
             callbackSettings.setSaveUrl("https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157a25e63fc4dfd4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286");
 
-            createPresentationParameters.setCallbackSettings(callbackSettings);
+            editPdfParameters.setCallbackSettings(callbackSettings);
 
-            var responseObject = await sdkOperations.createPresentation(createPresentationParameters);
+            var responseObject = await sdkOperations.editPdf(editPdfParameters);
 
             if(responseObject != null) {
-                console.log("Status Code: " + responseObject.statusCode);
+                console.log("\nStatus Code: " + responseObject.statusCode);
     
-                let presentationResponseObject = responseObject.object;
+                let pdfSessionResponseObj = responseObject.object;
     
-                if(presentationResponseObject != null){
+                if(pdfSessionResponseObj != null){
 
-                    if(presentationResponseObject instanceof SDK.V1.CreateDocumentResponse){
-                        console.log("\nPresentation ID - " + presentationResponseObject.getDocumentId());
-                        console.log("\nPresentation session ID - " + presentationResponseObject.getSessionId());
-                        console.log("\nPresentation session URL - " + presentationResponseObject.getDocumentUrl());
-                        console.log("\nPresentation save URL - " + presentationResponseObject.getSaveUrl());
-                        console.log("\nPresentation delete URL - " + presentationResponseObject.getDocumentDeleteUrl());
-                        console.log("\nPresentation session delete URL - " + presentationResponseObject.getSessionDeleteUrl());
-                    } else if (presentationResponseObject instanceof SDK.V1.InvalidConfigurationException) {
-                        console.log("\nInvalid configuration exception. Exception json - ", presentationResponseObject);
+                    if(pdfSessionResponseObj instanceof SDK.V1.CreateDocumentResponse){
+                        console.log("\nPDF Document ID - " + pdfSessionResponseObj.getDocumentId());
+                        console.log("\nPDF session ID - " + pdfSessionResponseObj.getSessionId());
+                        console.log("\nPDF session URL - " + pdfSessionResponseObj.getDocumentUrl());
+                        console.log("\nPDF save URL - " + pdfSessionResponseObj.getSaveUrl());
+                        console.log("\nPDF delete URL - " + pdfSessionResponseObj.getDocumentDeleteUrl());
+                        console.log("\nPDF session delete URL - " + pdfSessionResponseObj.getSessionDeleteUrl());
+                    } else if (pdfSessionResponseObj instanceof SDK.V1.InvalidConfigurationException) {
+                        console.log("\nInvalid configuration exception. Exception json - ", pdfSessionResponseObj);
                     } else {
                         console.log("\nRequest not completed successfullly");
                     }
@@ -127,4 +119,4 @@ class EditPresentation {
     }
 }
 
-EditPresentation.execute();
+EditPDF.execute();

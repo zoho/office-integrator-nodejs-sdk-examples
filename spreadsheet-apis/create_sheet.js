@@ -33,6 +33,12 @@ class CreateSheet {
 
             createSheetParameters.setEditorSettings(editorSettings);
 
+            var sheetUiOptions = new SDK.V1.SheetUiOptions();
+
+            sheetUiOptions.setSaveButton("show");
+
+            createSheetParameters.setUiOptions(sheetUiOptions);
+
             var permissions = new Map();
 
             permissions.set("document.export", true);
