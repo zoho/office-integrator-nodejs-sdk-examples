@@ -1,8 +1,6 @@
 import * as SDK from "@zoho-corp/office-integrator-sdk";
-import { readFileSync, writeFileSync } from 'fs';
-const __dirname = import.meta.dirname;
 
-class ConvertPresentation {
+class GetPdfSessionDetail {
 
     static async execute() {
         
@@ -12,40 +10,32 @@ class ConvertPresentation {
 
         try {
             var sdkOperations = new SDK.V1.V1Operations();
-            var conversionParameters = new SDK.V1.ConvertPresentationParameters();
+            var editPdfParameters = new SDK.V1.EditPdfParameters();
+            
+            editPdfParameters.setUrl("https://demo.office-integrator.com/zdocs/EventForm.pdf");
 
-            //Either use url as document source or attach the document in request body use below methods
-            conversionParameters.setUrl("https://demo.office-integrator.com/samples/show/Zoho_Show.pptx");
+            var responseObject = await sdkOperations.editPdf(editPdfParameters);
 
-            // var fileName = "Graphic-Design-Proposal.docx";
-            // var filePath = __dirname + "/sample_documents/Zoho_Show.pptx";
-            // var fileStream = readFileSync(filePath);
-            // var streamWrapper = new SDK.StreamWrapper(fileName, fileStream, filePath);
+            var sessionId = responseObject.object.getSessionId();
 
-            // conversionParameters.setDocument(streamWrapper);
+            console.log("\nPDF session created to demonstrate get session details api. Created session ID - ", sessionId);
 
-            conversionParameters.setFormat("pdf");
-
-            var responseObject = await sdkOperations.convertPresentation(conversionParameters);
+            var responseObject = await sdkOperations.getPdfDocumentSession(sessionId);
 
             if(responseObject != null) {
+                //Get the status code from response
                 console.log("\nStatus Code: " + responseObject.statusCode);
     
                 //Get the api response object from responseObject
-                let showResponseObject = responseObject.object;
-
-                if(showResponseObject != null) {
-                    if(showResponseObject instanceof SDK.V1.FileBodyWrapper) {
-                        var convertedDocument = showResponseObject.getFile();
-
-                        if (convertedDocument instanceof SDK.StreamWrapper) {
-                            var outputFilePath = __dirname + "/sample_documents/conversion_output.pdf";
-
-                            writeFileSync(outputFilePath, convertedDocument.getStream());
-                            console.log("\nCheck converted output file in file path - ", outputFilePath);
-                        }
-                    } else if (showResponseObject instanceof SDK.V1.InvalidConfigurationException) {
-                        console.log("\nInvalid configuration exception. Exception json - ", showResponseObject);
+                let showResponseObj = responseObject.object;
+    
+                if(showResponseObj != null){
+                    //TODO: Need to fix object type issue
+                    if(showResponseObj instanceof SDK.V1.SessionMeta ){
+                        console.log("\nSession Status - " + showResponseObj.getStatus());
+                        console.log("\nSession Expires On - " + showResponseObj.getInfo().getExpiresOn());
+                    } else if (showResponseObj instanceof SDK.V1.InvalidConfigurationException) {
+                        console.log("\nInvalid configuration exception. Exception json - ", showResponseObj);
                     } else {
                         console.log("\nRequest not completed successfullly");
                     }
@@ -82,6 +72,7 @@ class ConvertPresentation {
 
         console.log("SDK initialized successfully.");
     }
+    
 }
 
-ConvertPresentation.execute();
+GetPdfSessionDetail.execute();
