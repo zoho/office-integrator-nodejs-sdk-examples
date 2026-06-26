@@ -2,7 +2,7 @@ import * as SDK from "@zoho-corp/office-integrator-sdk";
 
 class SDKInitializer {
 
-    //Include office-integrator-sdk package in your package json and the execute this code.
+    //Include office-integrator-sdk package in your package json and then execute this code.
 
     static async initializeSdk() {
 
@@ -10,7 +10,7 @@ class SDKInitializer {
         let environment = await new SDK.DataCenter.Production("https://api.office-integrator.com");
 
         let auth = new SDK.AuthBuilder()
-            .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service
+            .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office integrator service
             .authenticationSchema(await new SDK.V1.Authentication().getTokenFlow())
             .build();
 

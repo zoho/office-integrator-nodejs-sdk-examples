@@ -4,7 +4,7 @@ const __dirname = import.meta.dirname;
 
 class MergeAndDownload {
 
-    //Include office-integrator-sdk package in your package json and the execute this code.
+    //Include office-integrator-sdk package in your package json and then execute this code.
 
     static async initializeSdk() {
 
@@ -12,7 +12,7 @@ class MergeAndDownload {
         let environment = await new SDK.DataCenter.Production("https://api.office-integrator.com");
 
         let auth = new SDK.AuthBuilder()
-                        .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service
+                        .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office integrator service
                         .authenticationSchema(await new SDK.V1.Authentication().getTokenFlow())
                         .build();
 
@@ -34,7 +34,7 @@ class MergeAndDownload {
     static async execute() {
         
         //Initializing SDK once is enough. Calling here since code sample will be tested standalone. 
-        //You can place SDK initializer code in you application and call once while your application start-up. 
+        //You can place SDK initializer code in your application and call once while your application start-up. 
         await this.initializeSdk();
 
         try {
@@ -95,7 +95,7 @@ class MergeAndDownload {
                     } else if (writerResponseObject instanceof SDK.V1.InvalidConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
-                        console.log("\nRequest not completed successfullly");
+                        console.log("\nRequest not completed successfully");
                     }
                 }
             }
