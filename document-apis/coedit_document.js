@@ -17,7 +17,7 @@ class CoEditDocument {
             //To collaborate in existing document you need to provide the document id(e.g: 1000) alone is enough.
             //Note: Make sure the document already exists in Zoho server for below given document id.
             //Even if the document is added to this request, if document exist in zoho server for given document id,
-            //then session will be created for document already exists with Zoho.
+            //then session will be created for the document that already exists with Zoho.
             documentInfo.setDocumentId("1000");
 
             createDocumentParameters.setDocumentInfo(documentInfo);
